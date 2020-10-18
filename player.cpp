@@ -58,7 +58,7 @@ namespace player {
 			}
 		} else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 			if (hit != nullptr) {
-				SetBlock(hit->pos + hit->face, blockMgr::stone);
+				PutBlock(hit->pos + hit->face, blockMgr::stone);
 				hit = physics::Raycast(pos, rot, 10);
 			}
 		}

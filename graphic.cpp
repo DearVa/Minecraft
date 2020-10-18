@@ -1,5 +1,4 @@
 #include "Graphic.h"
-#define INT_HMAX 1073741823
 
 namespace graphic {
 	GLfloat r = 0;

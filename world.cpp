@@ -255,6 +255,8 @@ namespace world {
 			}
 		}
 		glPopMatrix();
+
+		//playerSet = GetBlockSet(player::pos.x, player::pos.z);
 	}
 
 	void SetBlock(BlockSet *blockSet, int x, int y, int z, Block *block) {
@@ -272,6 +274,17 @@ namespace world {
 
 	void SetBlock(Vector3i pos, Block *block) {
 		SetBlock(pos.x, pos.y, pos.z, block);
+	}
+
+	void PutBlock(Vector3i pos, Block *block) {  // ¼ì²â
+		if (GetBlock(pos)) {
+			return;
+		}
+		if ((int)round(player::pos.x) == pos.x && (int)round(player::pos.z) == pos.z &&
+		   ((int)round(player::pos.y) == pos.y || (int)round(player::pos.y) == pos.y + 1)) {
+			return;
+		}
+		SetBlock(pos, block);
 	}
 
 	Block *GetBlock(int x, int y, int z) {

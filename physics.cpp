@@ -9,14 +9,15 @@ namespace physics {
 	Vector3i *vs = new Vector3i[6];
 	RayCastHit rayCastHit;
 
-	void Initial(double ms) {
+	void Initial(long ms) {
 		std::thread phyThread = std::thread(PhysicsLoop, ms);
 		phyThread.detach();
 	}
 
-	void PhysicsLoop(double ms) {
-		double dt = ms / 1000;
+	void PhysicsLoop(long ms) {
+		double dt = ms / 1000.0;
 		while (true) {
+			clock_t startTime = clock();
 			vx = vf * sin(rot.x * val) + vr * sin((rot.x + 90) * val);
 			vz = vf * cos(rot.x * val) + vr * cos((rot.x + 90) * val);
 
@@ -36,12 +37,6 @@ namespace physics {
 				bool b = GetCollider(posx, pos.y, posz - 1);
 				bool rb = GetCollider(posx + 1, pos.y, posz - 1);
 
-				/*cout << (lf ? "O" : " ") << (f ? "O" : " ") << (rf ? "O" : " ") << endl;
-				cout << (l ? "O" : " ") << " " << (r ? "O" : " ") << endl;
-				cout << (lb ? "O" : " ") << (b ? "O" : " ") << (rb ? "O" : " ") << endl;
-				cout << pf << " " << pr << " " << pb << " " << pl << endl;
-				cout << posx << " " << pos.y << " " << posz << endl << endl;*/
-
 				if (vz > 0 && pf && (f || (pl && lf && !l) || (pr && rf && !r))) {
 					vz = 0;
 					pos.z = posz + 0.30001;
@@ -58,14 +53,14 @@ namespace physics {
 					pos.x = posx - 0.30001;
 				}
 
-				if (vy > 0 && (GetBlock(posx + 0.31, ceil(pos.y - 0.2), posz + 0.5) || GetBlock(posx + 0.5, ceil(pos.y - 0.2), posz + 0.31) ||
-					GetBlock(posx + 0.69f, ceil(pos.y - 0.2f), posz + 0.5f) || GetBlock(posx + 0.5, ceil(pos.y - 0.2f), posz + 0.69f))) {
+				if (vy > 0 && (GetBlock(pos.x + 0.31, ceil(pos.y - 0.2), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.31) ||
+					GetBlock(pos.x + 0.69f, ceil(pos.y - 0.2f), pos.z + 0.5f) || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2f), pos.z + 0.69f))) {
 					vy = 0;
 					pos.y = ceil(pos.y - 0.8f);  // 头顶碰撞
 				}
 
-				grounded = (GetBlock(posx + 0.31, ceil(pos.y - 2.0), posz + 0.5) || GetBlock(posx + 0.5, ceil(pos.y - 2.0), posz + 0.31) ||
-					GetBlock(posx + 0.69, ceil(pos.y - 2.0), posz + 0.5) || GetBlock(posx + 0.5, ceil(pos.y - 2.0), posz + 0.69));
+				grounded = (GetBlock(pos.x + 0.31, ceil(pos.y - 2.0), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.31) ||
+					GetBlock(pos.x + 0.69, ceil(pos.y - 2.0), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.69));
 			}
 			
 			if (grounded) {  // 模拟重力
@@ -95,7 +90,12 @@ namespace physics {
 				//	it--;
 				//}
 			}
-			Sleep(ms);
+
+			long t = ms + startTime - clock();
+			if (t <= 0) {
+				continue;
+			}
+			Sleep(t);
 		}
 	}
 

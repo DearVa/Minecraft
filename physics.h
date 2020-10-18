@@ -1,4 +1,5 @@
 #pragma once
+#include <ctime>
 #include <thread>
 #include <iostream>
 #include <Windows.h>
@@ -12,7 +13,7 @@ namespace physics {
 		Vector3i face;
 	};
 
-	void Initial(double ms);
-	void PhysicsLoop(double ms);
+	void Initial(long ms);
+	void PhysicsLoop(long ms);
 	RayCastHit *Raycast(Vector3 origin, Vector2 direction, GLfloat dis);
 }

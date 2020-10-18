@@ -24,6 +24,7 @@ namespace world {
 	void SetBlock(BlockSet *blockSet, int x, int y, int z, Block *block);
 	void SetBlock(int x, int y, int z, Block *block);
 	void SetBlock(Vector3i pos, Block *block);
+	void PutBlock(Vector3i pos, Block *block);
 	Block *GetBlock(int x, int y, int z);
 	Block *GetBlock(Vector3i pos);
 	void RemoveBlock(int x, int y, int z);

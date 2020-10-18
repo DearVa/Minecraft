@@ -318,7 +318,7 @@ namespace world {
 	}
 
 	void DestoryBlock(Vector3i pos) {  // 带有粒子效果
-		graphic::ParticalEffect(pos, GetBlock(pos)->texs, 6, 10, 5, 2, 20);
+		graphic::ParticalEffect(pos, GetBlock(pos)->texs, 6, 10, 5, 0.8f, 20);
 		RemoveBlock(pos);
 	}
 

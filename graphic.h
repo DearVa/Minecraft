@@ -22,8 +22,13 @@ namespace graphic {
 		Vector2 texOffset;
 	};
 
+	struct ParticalNode {
+		Partical *partical;
+		ParticalNode *next;
+	};
+
 	extern GLfloat r;
-	extern vector<graphic::Partical> particals;
+	extern ParticalNode *particals, *particalsEnd;
 
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g);
 	void Display();

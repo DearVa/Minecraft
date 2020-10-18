@@ -2,21 +2,26 @@
 
 namespace graphic {
 	GLfloat r = 0;
-	vector<graphic::Partical> particals;
+	ParticalNode *particals, *particalsEnd;
+
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g) {
 		for (int i = 0; i < count; i++) {
-			Partical p;
-			p.pos = pos;
-			p.tex = texs[rand() % texsSize];
-			p.texOffset.x = (rand() % 8) / 8.0f;
-			p.texOffset.y = (rand() % 8) / 8.0f;
-			p.vel.x = maxVel / (rand() % 100 - 50);
-			p.vel.y = maxVel / (rand() % 100 - 50);
-			p.vel.z = maxVel / (rand() % 100 - 50);
-			p.size = (rand() % 100) / 200.0f + 0.1f;
-			p.timeLeft = lastTime;
-			p.g = g;
-			particals.push_back(p);
+			ParticalNode *node = new ParticalNode;
+			Partical *p = new Partical;
+			p->pos = pos;
+			p->tex = texs[rand() % texsSize];
+			p->texOffset.x = (rand() % 8) / 8.0f;
+			p->texOffset.y = (rand() % 8) / 8.0f;
+			p->vel.x = maxVel / (rand() % 100 - 50);
+			p->vel.y = maxVel / (rand() % 100 - 50);
+			p->vel.z = maxVel / (rand() % 100 - 50);
+			p->size = (rand() % 100) / 200.0f + 0.1f;
+			p->timeLeft = lastTime;
+			p->g = g;
+			node->partical = p;
+			node->next = nullptr;
+			particalsEnd->next = node;
+			particalsEnd = node;
 		}
 	}
 
@@ -33,25 +38,27 @@ namespace graphic {
 		world::DrawWorld(4);
 
 		// 绘制粒子效果
-		for (int i = 0; i < particals.size(); i++) {
-			Partical p = particals[i];
+		ParticalNode *node = particals->next;
+		while (node != nullptr) {
+			Partical *p = node->partical;
 			glPushMatrix();
-			glTranslatef(p.pos.x - 100000000, p.pos.y, 100000000 - p.pos.z);
+			glTranslatef(p->pos.x - 100000000, p->pos.y, 100000000 - p->pos.z);
 			glRotatef(-player::rot.x, 0, 1, 0);
 			glRotatef(-player::rot.y, 1, 0, 0);
-			glBindTexture(GL_TEXTURE_2D, p.tex);
+			glBindTexture(GL_TEXTURE_2D, p->tex);
 			glBegin(GL_QUADS);
-			float size = 0.1f * p.size;
-			glTexCoord2f(p.texOffset.x, p.texOffset.y);
+			float size = 0.1f * p->size;
+			glTexCoord2f(p->texOffset.x, p->texOffset.y);
 			glVertex3f(-size, -size, 0);
-			glTexCoord2f(p.texOffset.x + 0.125f, p.texOffset.y);
+			glTexCoord2f(p->texOffset.x + 0.125f, p->texOffset.y);
 			glVertex3f(size, -size, 0);
-			glTexCoord2f(p.texOffset.x + 0.125f, p.texOffset.y + 0.125f);
+			glTexCoord2f(p->texOffset.x + 0.125f, p->texOffset.y + 0.125f);
 			glVertex3f(size, size, 0);
-			glTexCoord2f(p.texOffset.x, p.texOffset.y + 0.125f);
+			glTexCoord2f(p->texOffset.x, p->texOffset.y + 0.125f);
 			glVertex3f(-size, size, 0);
 			glEnd();
 			glPopMatrix();
+			node = node->next;
 		}
 
 		glDisable(GL_TEXTURE_2D);
@@ -168,6 +175,10 @@ namespace graphic {
 		glHint(GL_POINT_SMOOTH, GL_NICEST);
 
 		srand((int)time(0));
+		particals = new ParticalNode;
+		particals->partical = nullptr;
+		particals->next = nullptr;
+		particalsEnd = particals;
 
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);

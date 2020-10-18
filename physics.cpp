@@ -77,18 +77,27 @@ namespace physics {
 			pos.z += vz * dt;
 
 			// 模拟粒子效果
-			vector<graphic::Partical>::iterator it = graphic::particals.begin();
-			while (it != graphic::particals.end()) {
-				(*it).vel.y -= (*it).g * dt;
-				(*it).pos.x += (*it).vel.x * dt;
-				(*it).pos.y += (*it).vel.y * dt;
-				(*it).pos.z += (*it).vel.z * dt;
-				(*it).timeLeft -= dt;
-				it++;
-				//if ((*it).timeLeft <= 0) {
-				//	graphic::particals.erase(it);
-				//	it--;
-				//}
+			graphic::ParticalNode *last = graphic::particals;
+			graphic::ParticalNode *node = last->next;
+			while (node != nullptr) {
+				graphic::Partical *p = node->partical;
+				p->vel.y -= p->g * dt;
+				p->pos.x += p->vel.x * dt;
+				p->pos.y += p->vel.y * dt;
+				p->pos.z += p->vel.z * dt;
+				p->timeLeft -= dt;
+				if (p->timeLeft <= 0) {
+					if (node->next) {
+						last->next = node->next;
+					} else {
+						last->next = nullptr;
+						graphic::particalsEnd = last;
+					}
+					delete node;
+				} else {
+					last = node;
+				}
+				node = last->next;
 			}
 
 			long t = ms + startTime - clock();

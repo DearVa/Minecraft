@@ -2,13 +2,13 @@
 #include "graphic.h"
 
 namespace player {
-	Vector3 pos = Vector3(0, 2, 0);  // 玩家坐标
-	GLfloat vx, vy, vz;  // 速度
-	GLfloat vf, vr;  // 正向速度，右向速度
+	Vector3 pos = Vector3(100000000, 2, 100000000);  // 玩家坐标
+	GLdouble vx, vy, vz;  // 速度
+	GLdouble vf, vr;  // 正向速度，右向速度
 	Vector2 rot;  // 视角旋转
 	bool grounded;  // 是否落地
 	GLfloat xSensitivity = 0.1f, ySensitivity = 0.1f;  // 鼠标灵敏度
-	GLfloat speed = 5;  // 行走速度
+	GLdouble speed = 5;  // 行走速度
 	int hWidth, hHeight;  // 屏幕宽高一半
 	float val = 3.1415926535 / 180;
 	physics::RayCastHit *hit = nullptr;

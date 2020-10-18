@@ -27,16 +27,16 @@ namespace world {
 	BlockSet *GetBlockSet(int x, int z) {
 		int xx = x / 16, zz = z / 16;
 		BlockSet *blockSet = playerSet;
-		while (blockSet->l && xx > blockSet->x) {
+		while (blockSet->l && xx < blockSet->x) {
 			blockSet = blockSet->l;
 		}
-		while (blockSet->r && xx < blockSet->x) {
+		while (blockSet->r && xx > blockSet->x) {
 			blockSet = blockSet->r;
 		}
-		while (blockSet->b && zz > blockSet->z) {
+		while (blockSet->b && zz < blockSet->z) {
 			blockSet = blockSet->b;
 		}
-		while (blockSet->f && zz < blockSet->z) {
+		while (blockSet->f && zz > blockSet->z) {
 			blockSet = blockSet->f;
 		}
 		return blockSet;
@@ -139,8 +139,8 @@ namespace world {
 
 	void CreateWorld(Block *baseBlock) {
 		worldCenter = new BlockSet;
-		worldCenter->x = 0;
-		worldCenter->z = 0;
+		worldCenter->x = 6250000;
+		worldCenter->z = 6250000;
 		memset(worldCenter->blocks, 0, sizeof(worldCenter->blocks));
 		worldCenter->f = nullptr;
 		worldCenter->l = nullptr;
@@ -229,7 +229,7 @@ namespace world {
 			}
 		}
 		glPopMatrix();
-		/*nbs = nbs->b;
+		nbs = nbs->b;
 		glPushMatrix();
 		glTranslatef(-16, 0, 16);
 		for (int y = 0; y < 32; y++) {
@@ -254,7 +254,7 @@ namespace world {
 				}
 			}
 		}
-		glPopMatrix();*/
+		glPopMatrix();
 	}
 
 	void SetBlock(BlockSet *blockSet, int x, int y, int z, Block *block) {
@@ -280,7 +280,8 @@ namespace world {
 		}
 		BlockSet *blockSet = GetBlockSet(x, z);
 		if (blockSet != nullptr) {
-			return blockSet->blocks[y][z % 16][x % 16];
+			int xx = x % 16, zz = z % 16;
+			return blockSet->blocks[y][zz][xx];
 		}
 		return nullptr;
 	}

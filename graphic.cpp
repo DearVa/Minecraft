@@ -1,9 +1,9 @@
 #include "Graphic.h"
+#define INT_HMAX 1073741823
 
 namespace graphic {
 	GLfloat r = 0;
 	vector<graphic::Partical> particals;
-
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g) {
 		for (int i = 0; i < count; i++) {
 			Partical p;
@@ -27,7 +27,7 @@ namespace graphic {
 
 		glRotatef(player::rot.y, 1, 0, 0);  // 摄像机变换
 		glRotatef(player::rot.x, 0, 1, 0);
-		glTranslatef(-player::pos.x, -player::pos.y, player::pos.z);
+		glTranslatef(100000000 - player::pos.x, -player::pos.y, player::pos.z - 100000000);
 
 		// 绘制世界
 		glEnable(GL_TEXTURE_2D);
@@ -37,7 +37,7 @@ namespace graphic {
 		for (int i = 0; i < particals.size(); i++) {
 			Partical p = particals[i];
 			glPushMatrix();
-			glTranslatef(p.pos.x, p.pos.y, -p.pos.z);
+			glTranslatef(p.pos.x - 100000000, p.pos.y, 100000000 - p.pos.z);
 			glRotatef(-player::rot.x, 0, 1, 0);
 			glRotatef(-player::rot.y, 1, 0, 0);
 			glBindTexture(GL_TEXTURE_2D, p.tex);
@@ -61,7 +61,7 @@ namespace graphic {
 		if (player::hit) {
 			glPushMatrix();
 			Vector3i pos = player::hit->pos;
-			glTranslatef(pos.x, pos.y, -pos.z);
+			glTranslatef(pos.x - 100000000, pos.y, 100000000 - pos.z);
 			glColor3f(0, 0, 0);
 			glLineWidth(3);
 			glBegin(GL_LINE_LOOP);

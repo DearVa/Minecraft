@@ -1,6 +1,6 @@
 #include "vector3.h"
 
-inline float Vector3::length() {
+inline double Vector3::length() {
 	return (float)(x * x + y * y + z * z);
 }
 
@@ -16,7 +16,7 @@ Vector3 Vector3::normalize() {
 	return *this;
 }
 
-float Vector3::dotProduct(const Vector3 &v) {
+double Vector3::dotProduct(const Vector3 &v) {
 	return (x * v.x + y * v.y + z * v.z);
 }
 
@@ -50,7 +50,7 @@ Vector3 Vector3::operator - (const Vector3 &v) {
 	return vec;
 }
 
-Vector3 Vector3::operator * (float scale) {
+Vector3 Vector3::operator * (double scale) {
 	x = x * scale;
 	y = y * scale;
 	z = z * scale;
@@ -58,7 +58,7 @@ Vector3 Vector3::operator * (float scale) {
 	return *this;
 }
 
-Vector3 Vector3::operator / (float scale) {
+Vector3 Vector3::operator / (double scale) {
 	if (scale != 0.0) {
 		x = x / scale;
 		y = y / scale;

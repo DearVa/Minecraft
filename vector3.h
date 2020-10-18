@@ -3,7 +3,7 @@
 
 class Vector3 {
 public:
-	float x, y, z;
+	double x, y, z;
 
 	Vector3() {
 		x = 0.0;
@@ -11,7 +11,7 @@ public:
 		z = 0.0;
 	}
 
-	Vector3(float x, float y, float z) {
+	Vector3(double x, double y, double z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
@@ -23,15 +23,15 @@ public:
 		z = v.z;
 	}
 
-	inline float length();
+	inline double length();
 	Vector3 normalize();
-	float dotProduct(const Vector3 &v);
+	double dotProduct(const Vector3 &v);
 	Vector3 crossProduct(const Vector3 &v);
 
 	Vector3 operator + (const Vector3 &v);
 	Vector3 operator - (const Vector3 &v);
-	Vector3 operator * (float scale);
-	Vector3 operator / (float scale);
+	Vector3 operator * (double scale);
+	Vector3 operator / (double scale);
 	Vector3 operator - ();
 	bool operator == (const Vector3 &v);
 };

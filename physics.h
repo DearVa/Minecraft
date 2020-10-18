@@ -12,7 +12,7 @@ namespace physics {
 		Vector3i face;
 	};
 
-	void Initial(float ms);
-	void PhysicsLoop(float ms);
+	void Initial(double ms);
+	void PhysicsLoop(double ms);
 	RayCastHit *Raycast(Vector3 origin, Vector2 direction, GLfloat dis);
 }

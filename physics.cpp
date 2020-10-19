@@ -18,6 +18,29 @@ namespace physics {
 		double dt = ms / 1000.0;
 		while (true) {
 			clock_t startTime = clock();
+			if (w) {
+				vf = speed;
+			} else if (s) {
+				vf = -speed;
+			} else {
+				if (grounded) {
+					vf = 0;
+				} else {
+					vf -= vf * 0.05;
+				}
+			}
+			if (a) {
+				vr = -speed;
+			} else if (d) {
+				vr = speed;
+			} else {
+				if (grounded) {
+					vr = 0;
+				} else {
+					vr -= vr * 0.05;
+				}
+			}
+
 			vx = vf * sin(rot.x * val) + vr * sin((rot.x + 90) * val);
 			vz = vf * cos(rot.x * val) + vr * cos((rot.x + 90) * val);
 
@@ -40,7 +63,7 @@ namespace physics {
 				if (vz > 0 && pf && (f || (pl && lf && !l) || (pr && rf && !r))) {
 					vz = 0;
 					pos.z = posz + 0.30001;
-				} else if (vz < 0 && pb && (b || (pl && lb && !l) || (pr && rb && &r))) {
+				} else if (vz < 0 && pb && (b || (pl && lb && !l) || (pr && rb && !r))) {
 					vz = 0;
 					pos.z = posz - 0.30001;
 				}
@@ -53,14 +76,14 @@ namespace physics {
 					pos.x = posx - 0.30001;
 				}
 
-				if (vy > 0 && (GetBlock(pos.x + 0.31, ceil(pos.y - 0.2), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.31) ||
-					GetBlock(pos.x + 0.69f, ceil(pos.y - 0.2f), pos.z + 0.5f) || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2f), pos.z + 0.69f))) {
+				if (vy > 0 && (GetBlock(pos.x + 0.31, ceil(pos.y - 0.2), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.31)->block ||
+					GetBlock(pos.x + 0.69f, ceil(pos.y - 0.2f), pos.z + 0.5f)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2f), pos.z + 0.69f)->block)) {
 					vy = 0;
 					pos.y = ceil(pos.y - 0.8f);  // 头顶碰撞
 				}
 
-				grounded = (GetBlock(pos.x + 0.31, ceil(pos.y - 2.0), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.31) ||
-					GetBlock(pos.x + 0.69, ceil(pos.y - 2.0), pos.z + 0.5) || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.69));
+				grounded = (GetBlock(pos.x + 0.31, ceil(pos.y - 2.0), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.31)->block ||
+					GetBlock(pos.x + 0.69, ceil(pos.y - 2.0), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.69)->block);
 			}
 			
 			if (grounded) {  // 模拟重力
@@ -117,6 +140,9 @@ namespace physics {
 		for (int t = 1; t < dis; t++) {
 			int x = round(origin.x + t * sinrx * cosry);
 			int y = round(origin.y + t * sinry);
+			if (y > 127) {
+				return nullptr;
+			}
 			int z = round(origin.z + t * cosrx * cosry);
 			if (x != v1.x && y != v1.y && z != v1.z) { // 跳过了两个方块
 				vs[0] = Vector3i(x, v1.y, v1.z);
@@ -135,10 +161,10 @@ namespace physics {
 						index = i;
 					}
 				}
-				Block *b = GetBlock(vs[index]);  // v1是起始，vs是插值，x,y,z是终点
-				if (b == nullptr) {  // 差值方块没有碰撞到
+				Block *b = GetBlock(vs[index])->block;  // v1是起始，vs是插值，x,y,z是终点
+				if (b == nullptr) {  // 插值方块没有碰撞到
 					v1 = vs[index];
-					b = GetBlock(x, y, z);
+					b = GetBlock(x, y, z)->block;
 					if (b == nullptr) {  // 终点也没有碰撞到
 						v1 = Vector3i(x, y, z);
 						continue;
@@ -153,7 +179,7 @@ namespace physics {
 					return &rayCastHit;
 				}
 			} else if ((x != v1.x && y == v1.y && z == v1.z) || (x == v1.x && y != v1.y && z == v1.z) || (x == v1.x && y == v1.y && z != v1.z)) {  // 没有跳过方块
-				Block *b = GetBlock(x, y, z);
+				Block *b = GetBlock(x, y, z)->block;
 				if (b == nullptr) {  // 没有碰撞到
 					v1 = Vector3i(x, y, z);
 					continue;
@@ -182,10 +208,10 @@ namespace physics {
 						index = i;
 					}
 				}
-				Block *b = GetBlock(vs[index]);  // v1是起始，vs是插值，x,y,z是终点
+				Block *b = GetBlock(vs[index])->block;  // v1是起始，vs是插值，x,y,z是终点
 				if (b == nullptr) {  // 差值方块没有碰撞到
 					v1 = vs[index];
-					b = GetBlock(x, y, z);
+					b = GetBlock(x, y, z)->block;
 					if (b == nullptr) {  // 终点也没有碰撞到
 						v1 = Vector3i(x, y, z);
 						continue;

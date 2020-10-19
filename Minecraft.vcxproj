@@ -149,6 +149,7 @@
     <ClCompile Include="file.cpp" />
     <ClCompile Include="graphic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="perlinNoise.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="vector2.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="graphic.h" />
+    <ClInclude Include="perlinNoise.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="vector2.h" />

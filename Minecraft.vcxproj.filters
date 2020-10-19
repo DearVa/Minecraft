@@ -56,6 +56,9 @@
     <ClCompile Include="world.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="perlinNoise.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="block.h">
@@ -80,6 +83,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="perlinNoise.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

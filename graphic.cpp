@@ -26,6 +26,10 @@ namespace graphic {
 	}
 
 	void Display() {
+		POINT pos;
+		GetCursorPos(&pos);
+		player::MouseMove(pos.x, pos.y);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();  
 
@@ -120,7 +124,7 @@ namespace graphic {
 		glutIdleFunc(Display);
 		glutKeyboardFunc(player::KeyBoard);
 		glutKeyboardUpFunc(player::KeyBoardUp);
-		glutPassiveMotionFunc(player::MouseMove);
+		//glutPassiveMotionFunc(player::MouseMove);
 		glutMouseFunc(player::Mouse);
 
 		glShadeModel(GL_SMOOTH);
@@ -184,7 +188,7 @@ namespace graphic {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 
-		gluPerspective(55.0f, (GLfloat)width / height, 0.1f, 100.0f);
+		gluPerspective(60.0f, (GLfloat)width / height, 0.1f, 110.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 	}

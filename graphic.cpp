@@ -131,7 +131,20 @@ namespace graphic {
 		glClearColor(135 / 255.0f, 206 / 255.0f, 235 / 255.0f, 0);
 		glClearDepth(1.0f);
 
+		GLfloat lightSpecular[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat lightPosition[] = { 100000000, 128, 100000000, 0.0 };
+		glMaterialfv(GL_FRONT, GL_SPECULAR, lightSpecular);
+		glMaterialf(GL_FRONT, GL_SHININESS, 100.0);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+
+		glEnable(GL_BLEND);
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.9);
+		//glDepthMask(GL_FALSE);
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_COLOR_MATERIAL);
 

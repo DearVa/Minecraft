@@ -64,7 +64,7 @@ namespace player {
 			}
 		} else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 			if (hit != nullptr) {
-				PutBlock(hit->pos + hit->face, blockMgr::stone);
+				PutBlock(hit->pos + hit->face, blockMgr::leave);
 			}
 		}
 	}

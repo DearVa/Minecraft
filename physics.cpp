@@ -26,7 +26,7 @@ namespace physics {
 				if (grounded) {
 					vf = 0;
 				} else {
-					vf -= vf * 0.05;
+					vf -= vf * 5 * dt;
 				}
 			}
 			if (a) {
@@ -37,7 +37,7 @@ namespace physics {
 				if (grounded) {
 					vr = 0;
 				} else {
-					vr -= vr * 0.05;
+					vr -= vr * 5 * dt;
 				}
 			}
 
@@ -60,10 +60,10 @@ namespace physics {
 				bool b = GetCollider(posx, pos.y, posz - 1);
 				bool rb = GetCollider(posx + 1, pos.y, posz - 1);
 
-				if (vz > 0 && pf && (f || (pl && lf && !l) || (pr && rf && !r))) {
+				if (vz > 0 && pf && (f || (pl && lf && !l && !lf) || (pr && rf && !r && !rf))) {
 					vz = 0;
 					pos.z = posz + 0.30001;
-				} else if (vz < 0 && pb && (b || (pl && lb && !l) || (pr && rb && !r))) {
+				} else if (vz < 0 && pb && (b || (pl && lb && !l && !lb) || (pr && rb && !r && !rb))) {
 					vz = 0;
 					pos.z = posz - 0.30001;
 				}

@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 	graphic::Initial(width, height);
 	player::Initial(width, height);
 	world::Initial(7.89101112131415);
-	physics::Initial(10.0f);
+	physics::Initial(10);
 	glutMainLoop();
 	return 0;
 }

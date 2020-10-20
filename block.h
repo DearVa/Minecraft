@@ -10,11 +10,12 @@ const GLfloat TexCoords[4][2] = { {0,1},{1,1},{1,0},{0,0} };
 class Block {
 public:
 	GLuint texs[6];
+	bool transparent;
 
-	Block(GLuint tex);
-	Block(GLuint texs[]);
+	Block(GLuint tex, bool transparent);
+	Block(GLuint texs[], bool transparent);
 
-	void Draw(GLfloat x, GLfloat y, GLfloat z);
+	void Draw(GLfloat x, GLfloat y, GLfloat z, bool *visible);
 };
 
 using namespace file;

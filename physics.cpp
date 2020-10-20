@@ -76,14 +76,22 @@ namespace physics {
 					pos.x = posx - 0.30001;
 				}
 
-				if (vy > 0 && (GetBlock(pos.x + 0.31, ceil(pos.y - 0.2), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.31)->block ||
-					GetBlock(pos.x + 0.69f, ceil(pos.y - 0.2f), pos.z + 0.5f)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 0.2f), pos.z + 0.69f)->block)) {
+				BlockInfo *b1 = GetBlockInfo(pos.x + 0.31, ceil(pos.y - 0.2), pos.z + 0.5);
+				BlockInfo *b2 = GetBlockInfo(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.31);
+				BlockInfo *b3 = GetBlockInfo(pos.x + 0.69, ceil(pos.y - 0.2), pos.z + 0.5);
+				BlockInfo *b4 = GetBlockInfo(pos.x + 0.5, ceil(pos.y - 0.2), pos.z + 0.69);
+
+				if (vy > 0 && (b1 && b1->block) || (b2 && b2->block) || (b3 && b3->block) || (b4 && b4->block)) {
 					vy = 0;
-					pos.y = ceil(pos.y - 0.8f);  // 头顶碰撞
+					//pos.y = ceil(pos.y - 0.8f);  // 头顶碰撞
 				}
 
-				grounded = (GetBlock(pos.x + 0.31, ceil(pos.y - 2.0), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.31)->block ||
-					GetBlock(pos.x + 0.69, ceil(pos.y - 2.0), pos.z + 0.5)->block || GetBlock(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.69)->block);
+				b1 = GetBlockInfo(pos.x + 0.31, ceil(pos.y - 2.0), pos.z + 0.5);
+				b2 = GetBlockInfo(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.31);
+				b3 = GetBlockInfo(pos.x + 0.69, ceil(pos.y - 2.0), pos.z + 0.5);
+				b4 = GetBlockInfo(pos.x + 0.5, ceil(pos.y - 2.0), pos.z + 0.69);
+
+				grounded = (b1 && b1->block) || (b2 && b2->block) || (b3 && b3->block) || (b4 && b4->block);
 			}
 			
 			if (grounded) {  // 模拟重力
@@ -161,11 +169,11 @@ namespace physics {
 						index = i;
 					}
 				}
-				Block *b = GetBlock(vs[index])->block;  // v1是起始，vs是插值，x,y,z是终点
-				if (b == nullptr) {  // 插值方块没有碰撞到
+				BlockInfo *b = GetBlockInfo(vs[index]);  // v1是起始，vs是插值，x,y,z是终点
+				if (!(b && b->block)) {  // 插值方块没有碰撞到
 					v1 = vs[index];
-					b = GetBlock(x, y, z)->block;
-					if (b == nullptr) {  // 终点也没有碰撞到
+					b = GetBlockInfo(x, y, z);
+					if (!(b && b->block)) {  // 终点也没有碰撞到
 						v1 = Vector3i(x, y, z);
 						continue;
 					} else {
@@ -179,8 +187,8 @@ namespace physics {
 					return &rayCastHit;
 				}
 			} else if ((x != v1.x && y == v1.y && z == v1.z) || (x == v1.x && y != v1.y && z == v1.z) || (x == v1.x && y == v1.y && z != v1.z)) {  // 没有跳过方块
-				Block *b = GetBlock(x, y, z)->block;
-				if (b == nullptr) {  // 没有碰撞到
+				BlockInfo *b = GetBlockInfo(x, y, z);
+				if (!(b && b->block)) {  // 没有碰撞到
 					v1 = Vector3i(x, y, z);
 					continue;
 				}
@@ -208,11 +216,11 @@ namespace physics {
 						index = i;
 					}
 				}
-				Block *b = GetBlock(vs[index])->block;  // v1是起始，vs是插值，x,y,z是终点
-				if (b == nullptr) {  // 差值方块没有碰撞到
+				BlockInfo *b = GetBlockInfo(vs[index]);  // v1是起始，vs是插值，x,y,z是终点
+				if (!(b && b->block)) {  // 差值方块没有碰撞到
 					v1 = vs[index];
-					b = GetBlock(x, y, z)->block;
-					if (b == nullptr) {  // 终点也没有碰撞到
+					b = GetBlockInfo(x, y, z);
+					if (!(b && b->block)) {  // 终点也没有碰撞到
 						v1 = Vector3i(x, y, z);
 						continue;
 					} else {

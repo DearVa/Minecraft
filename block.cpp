@@ -1,27 +1,31 @@
 #include "block.h"
 
-Block::Block(GLuint tex) {
+Block::Block(GLuint tex, bool transparent) {
+	this->transparent = transparent;
 	for (int i = 0; i < 6; i++) {
 		texs[i] = tex;
 	}
 }
 
-Block::Block(GLuint texs[]) {
+Block::Block(GLuint texs[], bool transparent) {
+	this->transparent = transparent;
 	memcpy(this->texs, texs, 6 * sizeof(GLuint));
 }
 
-void Block::Draw(GLfloat x, GLfloat y, GLfloat z) {
+void Block::Draw(GLfloat x, GLfloat y, GLfloat z, bool *visible) {
 	glPushMatrix();
 	glTranslatef(x, y, -z);
 	for (int i = 0; i < 6; i++) {
-		glBindTexture(GL_TEXTURE_2D, texs[i]);
-		glBegin(GL_QUADS);
-		for (int j = 0; j < 4; j++) {
-			glTexCoord2f(TexCoords[j][0], TexCoords[j][1]);
-			int VtxId = cubeVi[i][j];
-			glVertex3fv(cubeVs[VtxId]);
+		if (visible[i]) {
+			glBindTexture(GL_TEXTURE_2D, texs[i]);
+			glBegin(GL_QUADS);
+			for (int j = 0; j < 4; j++) {
+				glTexCoord2f(TexCoords[j][0], TexCoords[j][1]);
+				int VtxId = cubeVi[i][j];
+				glVertex3fv(cubeVs[VtxId]);
+			}
+			glEnd();
 		}
-		glEnd();
 	}
 	glPopMatrix();
 }
@@ -38,15 +42,15 @@ namespace blockMgr {
 		TREE_TOP = LoadBMPTexture("./Tex/tree.bmp");
 		TREE_SIDE = LoadBMPTexture("./Tex/tree_side.bmp");
 		WOOD = LoadBMPTexture("./Tex/wood.bmp");
-		LEAVE = LoadBMPTexture("./Tex/stone.bmp", "./Tex/leaves_opaque.bmp");
+		LEAVE = LoadBMPTexture("./Tex/leaves.bmp", "./Tex/leaves_opaque.bmp");
 
-		stone = new Block(STONE);
+		stone = new Block(STONE, false);
 		GLuint grassTexs[] = { GRASS_TOP, GRASS_SIDE, GRASS_SIDE, GRASS_SIDE, GRASS_SIDE, DIRT };
-		grassBlock = new Block(grassTexs);
-		dirt = new Block(DIRT);
+		grassBlock = new Block(grassTexs, false);
+		dirt = new Block(DIRT, false);
 		GLuint treeTexs[] = { TREE_TOP, TREE_SIDE, TREE_SIDE, TREE_SIDE, TREE_SIDE, TREE_TOP };
-		tree = new Block(treeTexs);
-		wood = new Block(WOOD);
-		leave = new Block(LEAVE);
+		tree = new Block(treeTexs, false);
+		wood = new Block(WOOD, false);
+		leave = new Block(LEAVE, true);
 	}
 }

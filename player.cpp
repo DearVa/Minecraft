@@ -2,7 +2,7 @@
 #include "graphic.h"
 
 namespace player {
-	Vector3 pos = Vector3(100000000, 32, 100000000);  // 玩家坐标
+	Vector3 pos = Vector3(100000000, 68, 100000000);  // 玩家坐标
 	GLdouble vx, vy, vz;  // 速度
 	bool w, s, a, d;
 	GLdouble vf, vr;  // 正向速度，右向速度

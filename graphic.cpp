@@ -35,18 +35,18 @@ namespace graphic {
 
 		glRotatef(player::rot.y, 1, 0, 0);  // 摄像机变换
 		glRotatef(player::rot.x, 0, 1, 0);
-		glTranslatef(100000000 - player::pos.x, -player::pos.y, player::pos.z - 100000000);
+		glTranslated(world::playerSet->x * 16.0 - player::pos.x, -player::pos.y, player::pos.z - world::playerSet->z * 16.0);
 
 		// 绘制世界
 		glEnable(GL_TEXTURE_2D);
-		world::DrawWorld(4);
+		world::DrawWorld(3);
 
 		// 绘制粒子效果
 		ParticalNode *node = particals->next;
 		while (node != nullptr) {
 			Partical *p = node->partical;
 			glPushMatrix();
-			glTranslatef(p->pos.x - 100000000, p->pos.y, 100000000 - p->pos.z);
+			glTranslated(p->pos.x - world::playerSet->x * 16.0, p->pos.y, world::playerSet->z * 16.0 - p->pos.z);
 			glRotatef(-player::rot.x, 0, 1, 0);
 			glRotatef(-player::rot.y, 1, 0, 0);
 			glBindTexture(GL_TEXTURE_2D, p->tex);
@@ -71,7 +71,7 @@ namespace graphic {
 		if (player::hit) {
 			glPushMatrix();
 			Vector3i pos = player::hit->pos;
-			glTranslatef(pos.x - 100000000, pos.y, 100000000 - pos.z);
+			glTranslated(pos.x - world::playerSet->x * 16.0, pos.y, world::playerSet->z * 16.0 - pos.z);
 			glColor3f(0, 0, 0);
 			glLineWidth(3);
 			glBegin(GL_LINE_LOOP);
@@ -140,10 +140,10 @@ namespace graphic {
 		glEnable(GL_LIGHT0);
 
 		glEnable(GL_BLEND);
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_ALPHA_TEST);
-		glAlphaFunc(GL_GREATER, 0.9);
+		//glEnable(GL_ALPHA_TEST);
+		//glAlphaFunc(GL_GREATER, 0.9);
 		//glDepthMask(GL_FALSE);
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_COLOR_MATERIAL);

@@ -130,11 +130,11 @@ namespace file {
 		// ¶ÁÈ¡ÏñËØÊı¾İ 
 		fseek(pFile, offset, SEEK_SET);
 		fseek(oFile, ooffset, SEEK_SET);
-		unsigned char b = 0b10000000, d;
+		unsigned char mask, data;
 		for (int i = 0; i < totalBytes; i++) {
 			if (i % 32 == 0) {
-				b = 0b10000000;
-				if (fread(&d, 1, 1, oFile) <= 0) {
+				mask = 0b10000000;
+				if (fread(&data, 1, 1, oFile) <= 0) {
 					free(pixels);
 					fclose(pFile);
 					fclose(oFile);
@@ -148,8 +148,9 @@ namespace file {
 				return 0;
 			}
 			i += 3;
-			pixels[i] = (b & d) ? 255 : 0;
-			b = b >> 1;
+			pixels[i] = 127;
+			//pixels[i] = (mask & data) ? 255 : 0;
+			mask = mask >> 1;
 		}
 
 		/*for (int i = 0; i < totalBytes; i++) {
@@ -189,7 +190,7 @@ namespace file {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glTexImage2D(GL_TEXTURE_2D, 0, 4, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, pixels);
 		glBindTexture(GL_TEXTURE_2D, lastTextureID);
 
 		free(pixels);

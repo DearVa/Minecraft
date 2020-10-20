@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
 	int height = GetSystemMetrics(SM_CYSCREEN);
 	graphic::Initial(width, height);
 	player::Initial(width, height);
-	world::Initial(7.89101112131415);
+	world::Initial(1328886154);
 	physics::Initial(10);
 	glutMainLoop();
 	return 0;

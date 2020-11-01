@@ -130,16 +130,13 @@ namespace file {
 		// ¶ÁÈ¡ÏñËØÊı¾İ 
 		fseek(pFile, offset, SEEK_SET);
 		fseek(oFile, ooffset, SEEK_SET);
-		unsigned char mask, data;
+		unsigned int data = 0;
 		for (int i = 0; i < totalBytes; i++) {
-			if (i % 32 == 0) {
-				mask = 0b10000000;
-				if (fread(&data, 1, 1, oFile) <= 0) {
-					free(pixels);
-					fclose(pFile);
-					fclose(oFile);
-					return 0;
-				}
+			if (fread(&data, 3, 1, oFile) <= 0) {
+				free(pixels);
+				fclose(pFile);
+				fclose(oFile);
+				return 0;
 			}
 			if (fread(&pixels[i], 3, 1, pFile) <= 0) {
 				free(pixels);
@@ -148,9 +145,8 @@ namespace file {
 				return 0;
 			}
 			i += 3;
-			pixels[i] = 127;
+			pixels[i] = (data ? 0 : 255);
 			//pixels[i] = (mask & data) ? 255 : 0;
-			mask = mask >> 1;
 		}
 
 		/*for (int i = 0; i < totalBytes; i++) {

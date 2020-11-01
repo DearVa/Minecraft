@@ -1,13 +1,12 @@
 #pragma once
-#include <GL/glut.h>
-#include <map>
-#include <mutex>
+#include <thread>
 #include <utility>
 #include "block.h"
+#include "graphic.h"
 #include "vector3.h"
 #include "vector2.h"
 #include "perlinNoise.h"
-#define VISION 5
+#define VISION 3
 
 namespace world {
 	using namespace std;
@@ -17,9 +16,10 @@ namespace world {
 	};
 
 	struct Chunk {  // 区块
+		bool created = false;
 		int x, z;
-		BlockInfo blocks[128][16][16];
-		int dirtHeight = 40;  // 泥土层高度
+		BlockInfo blockInfos[128][16][16];
+		int dirtHeight = 20;  // 泥土层高度
 		int stoneHeight = 10;  // 石头层高度
 		int baseHeight = 20;
 	};
@@ -28,20 +28,16 @@ namespace world {
 		FRONT, LEFT, BACK, RIGHT
 	};
 
-	typedef pair<int, int> v2;
-
-	extern map<v2, Chunk*> worldMap;
-	extern Chunk *worldCenter, *playerSet;
+	extern int px, pz;
+	extern long wpx, wpz;
 
 	void Initial(double mapSeed);
+	Chunk *GetChunkByChunkPos(int x, int z);
 	void UpdateChunk();
 	void UpdateChunkLoop(long ms);
-	Chunk *CreateChunk(int x, int z);
-	Chunk *CreateChunk(Chunk *chunk, DIRECTION dir);
-	Chunk *GetChunk(int x, int z);
-	void CreateWorld();
+	Chunk *GetChunkByWorldPos(int x, int z);
 	void CreateTerrain(Chunk *chunk);
-	void DrawWorld(int maxVision);
+	void DrawWorld();
 	void SetBlockVisible(int x, int y, int z, bool *visible);
 	void SetChunkBlockVisiable(Chunk *chunk);
 	void SetBlock(Chunk *chunk, int x, int y, int z, Block *block);

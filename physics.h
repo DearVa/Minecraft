@@ -6,8 +6,8 @@
 #include "vector2.h"
 #include "world.h"
 
-using namespace world;
 namespace physics {
+	using namespace world;
 	struct RayCastHit {
 		Vector3i pos;
 		Vector3i face;

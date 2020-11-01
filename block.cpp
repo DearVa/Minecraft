@@ -13,6 +13,11 @@ Block::Block(GLuint texs[], bool transparent) {
 }
 
 void Block::Draw(GLfloat x, GLfloat y, GLfloat z, bool *visible) {
+	if (transparent) {
+		glEnable(GL_BLEND);
+	} else {
+		glDisable(GL_BLEND);
+	}
 	glPushMatrix();
 	glTranslatef(x, y, -z);
 	for (int i = 0; i < 6; i++) {

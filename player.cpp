@@ -1,7 +1,10 @@
 #include "player.h"
-#include "graphic.h"
+#include "world.h"
 
 namespace player {
+	using namespace std;
+	using namespace world;
+
 	Vector3 pos = Vector3(100000000, 68, 100000000);  // 玩家坐标
 	GLdouble vx, vy, vz;  // 速度
 	bool w, s, a, d;
@@ -21,57 +24,40 @@ namespace player {
 		SetCursorPos(hWidth, hHeight);
 	}
 
-	void KeyBoard(unsigned char key, int x, int y) {
-		if (key == 'w' || key == 'W') {
-			w = true;
+	void KeyBoard(GLFWwindow *window, int key, int scancode, int action, int mods) {
+		if (key == GLFW_KEY_W) {
+			w = action;
 		} 
-		if (key == 's' || key == 'S') {
-			s = true;
+		if (key == GLFW_KEY_S) {
+			s = action;
 		}
-		if (key == 'a' || key == 'A') {
-			a = true;
+		if (key == GLFW_KEY_A) {
+			a = action;
 		}
-		if (key == 'd' || key == 'D') {
-			d = true;
+		if (key == GLFW_KEY_D) {
+			d = action;
 		}
-		if (key == 32 && grounded) {  // 跳跃
+		if (key == GLFW_KEY_SPACE && grounded && action) {  // 跳跃
 			vy += 9;
 		}
-		if (key == 27) {  // ESC
-			exit(0);
+		if (key == GLFW_KEY_ESCAPE) {  // ESC
+			glfwSetWindowShouldClose(window, true);
 		}
 	}
 
-	void KeyBoardUp(unsigned char key, int x, int y) {
-		if (key == 'w' || key == 'W') {
-			w = false;
-		}
-		if (key == 's' || key == 'S') {
-			s = false;
-		}
-		if (key == 'a' || key == 'A') {
-			a = false;
-		}
-		if (key == 'd' || key == 'D') {
-			d = false;
-		}
-	}
-
-	void Mouse(int button, int state, int x, int y) {
-		if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+	void Mouse(GLFWwindow *window, int button, int action, int mods) {
+		if (button == GLFW_MOUSE_BUTTON_1 && action) {
 			if (hit != nullptr) {
 				DestoryBlock(hit->pos);
 			}
-		} else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		} else if (button == GLFW_MOUSE_BUTTON_2 && action) {
 			if (hit != nullptr) {
 				PutBlock(hit->pos + hit->face, blockMgr::leave);
 			}
 		}
 	}
 
-	//int xxx, yyy, zzz;
-
-	void MouseMove(int x, int y) {
+	void MouseMove(GLFWwindow *window, double x, double y) {
 		rot.x += (x - hWidth) * xSensitivity;
 		rot.y += (y - hHeight) * ySensitivity;
 		if (rot.x > 360 || rot.x < -360) {
@@ -85,11 +71,5 @@ namespace player {
 		SetCursorPos(hWidth, hHeight);
 
 		hit = physics::Raycast(pos, rot, 10);
-		/*if (hit && (xxx != hit->pos.x || yyy != hit->pos.y || zzz != hit->pos.z)) {
-			xxx = hit->pos.x;
-			yyy = hit->pos.y;
-			zzz = hit->pos.z;
-			cout << xxx << ", " << yyy << ", " << zzz << endl;
-		}*/
 	}
 }

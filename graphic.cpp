@@ -1,8 +1,13 @@
-#include "Graphic.h"
+#include "graphic.h"
+#include "player.h"
+#include "world.h"
 
 namespace graphic {
+	using namespace std;
+	using namespace world;
 	GLfloat r = 0;
 	ParticalNode *particals, *particalsEnd;
+	GLFWwindow *window;
 
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g) {
 		for (int i = 0; i < count; i++) {
@@ -25,28 +30,24 @@ namespace graphic {
 		}
 	}
 
-	void Display() {
-		POINT pos;
-		GetCursorPos(&pos);
-		player::MouseMove(pos.x, pos.y);
-
+	void inline Display() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glLoadIdentity();  
+		glLoadIdentity();
 
 		glRotatef(player::rot.y, 1, 0, 0);  // 摄像机变换
 		glRotatef(player::rot.x, 0, 1, 0);
-		glTranslated(world::playerSet->x * 16.0 - player::pos.x, -player::pos.y, player::pos.z - world::playerSet->z * 16.0);
+		glTranslated(wpx - player::pos.x, -player::pos.y, player::pos.z - wpz);
 
 		// 绘制世界
 		glEnable(GL_TEXTURE_2D);
-		world::DrawWorld(3);
+		world::DrawWorld();
 
 		// 绘制粒子效果
 		ParticalNode *node = particals->next;
 		while (node != nullptr) {
 			Partical *p = node->partical;
 			glPushMatrix();
-			glTranslated(p->pos.x - world::playerSet->x * 16.0, p->pos.y, world::playerSet->z * 16.0 - p->pos.z);
+			glTranslated(p->pos.x - wpx, p->pos.y, wpz - p->pos.z);
 			glRotatef(-player::rot.x, 0, 1, 0);
 			glRotatef(-player::rot.y, 1, 0, 0);
 			glBindTexture(GL_TEXTURE_2D, p->tex);
@@ -71,7 +72,7 @@ namespace graphic {
 		if (player::hit) {
 			glPushMatrix();
 			Vector3i pos = player::hit->pos;
-			glTranslated(pos.x - world::playerSet->x * 16.0, pos.y, world::playerSet->z * 16.0 - pos.z);
+			glTranslated(pos.x - wpx, pos.y, wpz - pos.z);
 			glColor3f(0, 0, 0);
 			glLineWidth(3);
 			glBegin(GL_LINE_LOOP);
@@ -110,22 +111,27 @@ namespace graphic {
 			glEnd();
 			glPopMatrix();
 		}
-
-		glutSwapBuffers();
+		glfwSwapBuffers(window);
 	}
 
 	void Initial(int width, int height) {
-		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-		glutInitWindowSize(1920, 1080);
-		glutCreateWindow("Minecraft");
-		glutFullScreen();
-		glutSetCursor(GLUT_CURSOR_NONE);
-		glutDisplayFunc(Display);
-		glutIdleFunc(Display);
-		glutKeyboardFunc(player::KeyBoard);
-		glutKeyboardUpFunc(player::KeyBoardUp);
-		//glutPassiveMotionFunc(player::MouseMove);
-		glutMouseFunc(player::Mouse);
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		int monitorCount;
+		GLFWmonitor **pMonitor = glfwGetMonitors(&monitorCount);
+		window = glfwCreateWindow(width, height, "Minecraft", pMonitor[0], NULL);
+		if (window == NULL) {
+			std::cout << "Failed to create GLFW window" << std::endl;
+			glfwTerminate();
+			exit(0);
+		}
+		glfwMakeContextCurrent(window);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetKeyCallback(window, player::KeyBoard);
+		glfwSetMouseButtonCallback(window, player::Mouse);
+		glfwSetCursorPosCallback(window, player::MouseMove);
 
 		glShadeModel(GL_SMOOTH);
 		glClearColor(135 / 255.0f, 206 / 255.0f, 235 / 255.0f, 0);
@@ -200,9 +206,15 @@ namespace graphic {
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-
 		gluPerspective(60.0f, (GLfloat)width / height, 0.1f, 110.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+	}
+
+	void RenderLoop() {
+		while (!glfwWindowShouldClose(window)) {
+			Display();
+			glfwPollEvents();
+		}
 	}
 }

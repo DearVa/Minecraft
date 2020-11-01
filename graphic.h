@@ -1,16 +1,10 @@
 #pragma once
-#include <GL/glut.h>
+#include "everything.h"
 #include <iostream>
 #include <random>
 #include <vector>
 #include <ctime>
-#include "player.h"
-#include "block.h"
-#include "world.h"
-#include "file.h"
 
-using namespace std;
-using namespace world;
 namespace graphic {
 	struct Partical {
 		Vector3 pos;
@@ -29,8 +23,10 @@ namespace graphic {
 
 	extern GLfloat r;
 	extern ParticalNode *particals, *particalsEnd;
+	extern GLFWwindow *window;
 
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g);
 	void Display();
 	void Initial(int width, int height);
+	void RenderLoop();
 }

@@ -1,6 +1,5 @@
 #include "physics.h"
 #include "player.h"
-#include "graphic.h"
 
 namespace physics {
 	using namespace player;
@@ -130,6 +129,8 @@ namespace physics {
 				}
 				node = last->next;
 			}
+
+			//cout << pos.x << " " << pos.z << "  " << px << " " << pz << endl;
 
 			long t = ms + startTime - clock();
 			if (t <= 0) {

@@ -1,5 +1,6 @@
 #include "physics.h"
 #include "player.h"
+#include "graphic.h"
 
 namespace physics {
 	using namespace player;

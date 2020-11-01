@@ -1,7 +1,7 @@
 #pragma once
+#include <GL/glut.h>
 #include <iostream>
 #include <memory>
-#include "graphic.h"
 
 namespace file {
 	GLuint LoadBMPTexture(const char *fileName);

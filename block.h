@@ -1,4 +1,5 @@
 #pragma once
+#include <GL/glut.h>
 #include <memory>
 #include "file.h"
 
@@ -17,8 +18,8 @@ public:
 	void Draw(GLfloat x, GLfloat y, GLfloat z, bool *visible);
 };
 
+using namespace file;
 namespace blockMgr {
-	using namespace file;
 	extern GLuint STONE, GRASS_TOP, GRASS_SIDE, DIRT;
 	extern Block *stone, *grassBlock, *dirt, *tree, *wood, *leave;
 

@@ -1,6 +1,5 @@
 #include "world.h"
 #include "graphic.h"
-#include "player.h"
 
 namespace world {
 	int px, pz, opx, opz;

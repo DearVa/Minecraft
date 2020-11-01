@@ -1,8 +1,7 @@
 #pragma once
-#include <thread>
+#include <GL/glut.h>
 #include <utility>
 #include "block.h"
-#include "graphic.h"
 #include "vector3.h"
 #include "vector2.h"
 #include "perlinNoise.h"

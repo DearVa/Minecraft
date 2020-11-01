@@ -1,13 +1,8 @@
-#include "graphic.h"
-#include "player.h"
-#include "world.h"
+#include "Graphic.h"
 
 namespace graphic {
-	using namespace std;
-	using namespace world;
 	GLfloat r = 0;
 	ParticalNode *particals, *particalsEnd;
-	GLFWwindow *window;
 
 	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g) {
 		for (int i = 0; i < count; i++) {
@@ -30,9 +25,13 @@ namespace graphic {
 		}
 	}
 
-	void inline Display() {
+	void Display() {
+		POINT pos;
+		GetCursorPos(&pos);
+		player::MouseMove(pos.x, pos.y);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glLoadIdentity();
+		glLoadIdentity();  
 
 		glRotatef(player::rot.y, 1, 0, 0);  // 摄像机变换
 		glRotatef(player::rot.x, 0, 1, 0);
@@ -111,27 +110,22 @@ namespace graphic {
 			glEnd();
 			glPopMatrix();
 		}
-		glfwSwapBuffers(window);
+
+		glutSwapBuffers();
 	}
 
 	void Initial(int width, int height) {
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		int monitorCount;
-		GLFWmonitor **pMonitor = glfwGetMonitors(&monitorCount);
-		window = glfwCreateWindow(width, height, "Minecraft", pMonitor[0], NULL);
-		if (window == NULL) {
-			std::cout << "Failed to create GLFW window" << std::endl;
-			glfwTerminate();
-			exit(0);
-		}
-		glfwMakeContextCurrent(window);
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		glfwSetKeyCallback(window, player::KeyBoard);
-		glfwSetMouseButtonCallback(window, player::Mouse);
-		glfwSetCursorPosCallback(window, player::MouseMove);
+		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+		glutInitWindowSize(1920, 1080);
+		glutCreateWindow("Minecraft");
+		glutFullScreen();
+		glutSetCursor(GLUT_CURSOR_NONE);
+		glutDisplayFunc(Display);
+		glutIdleFunc(Display);
+		glutKeyboardFunc(player::KeyBoard);
+		glutKeyboardUpFunc(player::KeyBoardUp);
+		//glutPassiveMotionFunc(player::MouseMove);
+		glutMouseFunc(player::Mouse);
 
 		glShadeModel(GL_SMOOTH);
 		glClearColor(135 / 255.0f, 206 / 255.0f, 235 / 255.0f, 0);
@@ -206,15 +200,9 @@ namespace graphic {
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
+
 		gluPerspective(60.0f, (GLfloat)width / height, 0.1f, 110.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-	}
-
-	void RenderLoop() {
-		while (!glfwWindowShouldClose(window)) {
-			Display();
-			glfwPollEvents();
-		}
 	}
 }

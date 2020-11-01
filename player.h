@@ -1,10 +1,16 @@
 #pragma once
+
+#include <GL/glut.h>
 #include <iostream>
 #include <Windows.h>
 #include <vector>
+#include "vector3.h"
+#include "vector2.h"
+#include "world.h"
 #include "physics.h"
-#include "everything.h"
 
+using namespace std;
+using namespace world;
 namespace player {
 	extern Vector3 pos;  // 玩家坐标
 	extern GLdouble vx, vy, vz;  // 速度
@@ -20,7 +26,8 @@ namespace player {
 	extern physics::RayCastHit *hit;
 
 	void Initial(int width, int height);
-	void KeyBoard(GLFWwindow *window, int key, int scancode, int action, int mods);
-	void Mouse(GLFWwindow *window, int button, int action, int mods);
-	void MouseMove(GLFWwindow *window, double x, double y);
+	void KeyBoard(unsigned char key, int x, int y);
+	void KeyBoardUp(unsigned char key, int x, int y);
+	void Mouse(int button, int state, int x, int y);
+	void MouseMove(int x, int y);
 }

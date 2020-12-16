@@ -40,6 +40,13 @@ Vector3 Vector3::operator + (const Vector3 &v) {
 	return vec;
 }
 
+Vector3 &Vector3::operator+=(const Vector3 &v) {
+	x += v.x;
+	y += v.y;
+	z += v.z;
+	return *this;
+}
+
 Vector3 Vector3::operator - (const Vector3 &v) {
 	Vector3 vec;
 
@@ -50,15 +57,24 @@ Vector3 Vector3::operator - (const Vector3 &v) {
 	return vec;
 }
 
-Vector3 Vector3::operator * (double scale) {
-	x = x * scale;
-	y = y * scale;
-	z = z * scale;
-
+Vector3 &Vector3::operator-=(const Vector3 &v) {
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
 	return *this;
 }
 
-Vector3 Vector3::operator / (double scale) {
+Vector3 Vector3::operator * (const double scale) {
+	Vector3 v;
+
+	v.x = x * scale;
+	v.y = y * scale;
+	v.z = z * scale;
+
+	return v;
+}
+
+Vector3 Vector3::operator / (const double scale) {
 	if (scale != 0.0) {
 		x = x / scale;
 		y = y / scale;

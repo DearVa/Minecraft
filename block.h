@@ -20,7 +20,7 @@ public:
 
 using namespace file;
 namespace blockMgr {
-	extern GLuint STONE, GRASS_TOP, GRASS_SIDE, DIRT;
+	extern GLuint STONE, GRASS_TOP, GRASS_SIDE, DIRT, PINK, FIREWORK;
 	extern Block *stone, *grassBlock, *dirt, *tree, *wood, *leave;
 
 	void Initial();

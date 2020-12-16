@@ -16,6 +16,12 @@ namespace world {
 		wpx = px * 16;
 		wpz = pz * 16;
 		UpdateChunk();
+		for (int y = 127; y > 0; y--) {
+			if (worldChunks[VISION][VISION].blockInfos[y][0][0].block != nullptr) {
+				player::pos.y = (double)y + 2.0;
+				break;
+			}
+		}
 		thread u = thread(UpdateChunkLoop, 500);
 		u.detach();
 	}
@@ -101,6 +107,7 @@ namespace world {
 
 	void DrawWorld() {
 		Chunk *chunk;
+		BlockInfo *blockInfo;
 		for (int x = -VISION; x <= VISION; x++) {
 			for (int z = -VISION; z <= VISION; z++) {
 				chunk = &worldChunks[VISION + x][VISION + z];
@@ -110,8 +117,9 @@ namespace world {
 					for (int y = 0; y < 128; y++) {
 						for (int z = 0; z < 16; z++) {
 							for (int x = 0; x < 16; x++) {
-								if (chunk->blockInfos[y][z][x].block != nullptr) {
-									chunk->blockInfos[y][z][x].block->Draw(x, y, z, chunk->blockInfos[y][z][x].visible);
+								blockInfo = &chunk->blockInfos[y][z][x];
+								if (blockInfo->block != nullptr) {
+									blockInfo->block->Draw(x, y, z, blockInfo->visible);
 								}
 							}
 						}
@@ -238,7 +246,7 @@ namespace world {
 	}
 
 	void DestoryBlock(Vector3i pos) {  // 带有粒子效果
-		graphic::ParticalEffect(pos, GetBlockInfo(pos)->block->texs, 6, 10, 5, 0.8f, 20);
+		graphic::ParticalEffect(pos, GetBlockInfo(pos)->block->texs, 6, 10, 5, 0.8f, 20, 0, true);
 		RemoveBlock(pos);
 	}
 

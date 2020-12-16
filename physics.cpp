@@ -107,28 +107,62 @@ namespace physics {
 			pos.y += vy * dt;
 			pos.z += vz * dt;
 
+			// 模拟实体
+			graphic::MotionObjNode *mLast = graphic::motionObjs;
+			graphic::MotionObjNode *mNode = mLast->next;
+			while (mNode != nullptr) {
+				graphic::MotionObj *o = mNode->motionObj;
+				o->pos.x += o->vel.x * dt;
+				o->pos.y += o->vel.y * dt;
+				o->pos.z += o->vel.z * dt;
+				o->timeLeft -= dt;
+				if (o->timeLeft <= 0) {
+					if (mNode->next) {
+						mLast->next = mNode->next;
+					} else {
+						mLast->next = nullptr;
+						graphic::motionObjsEnd = mLast;
+					}
+					o->OnDeath();
+					delete mNode;
+				} else {
+					mLast = mNode;
+				}
+				mNode = mLast->next;
+			}
+
 			// 模拟粒子效果
-			graphic::ParticalNode *last = graphic::particals;
-			graphic::ParticalNode *node = last->next;
-			while (node != nullptr) {
-				graphic::Partical *p = node->partical;
+			graphic::ParticalNode *pLast = graphic::particals;
+			graphic::ParticalNode *pNode = pLast->next;
+			while (pNode != nullptr) {
+				graphic::Partical *p = pNode->partical;
+				BlockInfo *down = GetBlockInfo(p->pos.x + 0.5, ceil(p->pos.y - 0.5), p->pos.z + 0.5);
+				if (p->collision) {
+					if (down && down->block) {
+						p->vel.y = -0.8 * p->vel.y;
+					}
+				}
+				if (p->size > p->timeLeft) {
+					p->size = p->timeLeft;
+				}
 				p->vel.y -= p->g * dt;
 				p->pos.x += p->vel.x * dt;
 				p->pos.y += p->vel.y * dt;
 				p->pos.z += p->vel.z * dt;
+				p->vel -= p->vel * p->drag;
 				p->timeLeft -= dt;
 				if (p->timeLeft <= 0) {
-					if (node->next) {
-						last->next = node->next;
+					if (pNode->next) {
+						pLast->next = pNode->next;
 					} else {
-						last->next = nullptr;
-						graphic::particalsEnd = last;
+						pLast->next = nullptr;
+						graphic::particalsEnd = pLast;
 					}
-					delete node;
+					delete pNode;
 				} else {
-					last = node;
+					pLast = pNode;
 				}
-				node = last->next;
+				pNode = pLast->next;
 			}
 
 			//cout << pos.x << " " << pos.z << "  " << px << " " << pz << endl;

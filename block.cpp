@@ -36,7 +36,7 @@ void Block::Draw(GLfloat x, GLfloat y, GLfloat z, bool *visible) {
 }
 
 namespace blockMgr {
-	GLuint STONE, GRASS_TOP, GRASS_SIDE, DIRT, TREE_TOP, TREE_SIDE, WOOD, LEAVE;
+	GLuint STONE, GRASS_TOP, GRASS_SIDE, DIRT, TREE_TOP, TREE_SIDE, WOOD, LEAVE, PINK, FIREWORK;
 	Block *stone, *grassBlock, *dirt, *tree, *wood, *leave;
 
 	void Initial() {
@@ -48,6 +48,8 @@ namespace blockMgr {
 		TREE_SIDE = LoadBMPTexture("./Tex/tree_side.bmp");
 		WOOD = LoadBMPTexture("./Tex/wood.bmp");
 		LEAVE = LoadBMPTexture("./Tex/leaves.bmp", "./Tex/leaves_opaque.bmp");
+		PINK = LoadBMPTexture("./Tex/cloth_6.bmp");
+		FIREWORK = LoadBMPTexture("./Tex/fireworks.bmp", "./Tex/fireworks_opaque.bmp");
 
 		stone = new Block(STONE, false);
 		GLuint grassTexs[] = { GRASS_TOP, GRASS_SIDE, GRASS_SIDE, GRASS_SIDE, GRASS_SIDE, DIRT };

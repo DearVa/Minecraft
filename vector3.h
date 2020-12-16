@@ -28,11 +28,13 @@ public:
 	double dotProduct(const Vector3 &v);
 	Vector3 crossProduct(const Vector3 &v);
 
-	Vector3 operator + (const Vector3 &v);
-	Vector3 operator - (const Vector3 &v);
-	Vector3 operator * (double scale);
-	Vector3 operator / (double scale);
-	Vector3 operator - ();
+	Vector3 operator +(const Vector3 &v);
+	Vector3 &operator +=(const Vector3 &v);
+	Vector3 operator -(const Vector3 &v);
+	Vector3 &operator -=(const Vector3 &v);
+	Vector3 operator *(const double scale);
+	Vector3 operator /(const double scale);
+	Vector3 operator -();
 	bool operator == (const Vector3 &v);
 };
 

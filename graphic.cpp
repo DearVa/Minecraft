@@ -1,10 +1,13 @@
 #include "Graphic.h"
 
+#define PI 3.14159
+
 namespace graphic {
 	GLfloat r = 0;
 	ParticalNode *particals, *particalsEnd;
+	MotionObjNode *motionObjs, *motionObjsEnd;
 
-	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g) {
+	void ParticalEffect(Vector3i pos, GLuint *texs, int texsSize, int count, float maxVel, float lastTime, float g, float drag, bool collision) {
 		for (int i = 0; i < count; i++) {
 			ParticalNode *node = new ParticalNode;
 			Partical *p = new Partical;
@@ -18,10 +21,67 @@ namespace graphic {
 			p->size = (rand() % 100) / 200.0f + 0.1f;
 			p->timeLeft = lastTime;
 			p->g = g;
+			p->drag = drag;
+			p->collision = collision;
 			node->partical = p;
 			node->next = nullptr;
 			particalsEnd->next = node;
 			particalsEnd = node;
+		}
+	}
+
+	void ParticalEffect(Vector3i pos, GLuint tex, int count, float maxVel, float lastTime, float g, float drag, bool collision) {
+		for (int i = 0; i < count; i++) {
+			ParticalNode *node = new ParticalNode;
+			Partical *p = new Partical;
+			p->pos = pos;
+			p->tex = tex;
+			p->texOffset.x = (rand() % 8) / 8.0f;
+			p->texOffset.y = (rand() % 8) / 8.0f;
+			p->vel.x = maxVel / (rand() % 100 - 50);
+			p->vel.y = maxVel / (rand() % 100 - 50);
+			p->vel.z = maxVel / (rand() % 100 - 50);
+			p->size = (rand() % 100) / 200.0f + 0.1f;
+			p->timeLeft = lastTime;
+			p->g = g;
+			p->drag = drag;
+			p->collision = collision;
+			node->partical = p;
+			node->next = nullptr;
+			particalsEnd->next = node;
+			particalsEnd = node;
+		}
+	}
+
+	void Summon(MotionObj *obj) {
+		MotionObjNode *node = new MotionObjNode;
+		node->motionObj = obj;
+		node->next = nullptr;
+		motionObjsEnd->next = node;
+		motionObjsEnd = node;
+	}
+
+	void FireworkEffect(Vector3i pos, GLuint tex, float lastTime, float g, float drag) {
+		for (int t = 0; t < 360; t += 10) {
+			for (int n = 0; n < 10; n++) {
+				ParticalNode *node = new ParticalNode;
+				Partical *p = new Partical;
+				p->pos = pos;
+				p->tex = tex;
+				p->texOffset.x = (rand() % 8) / 8.0f;
+				p->texOffset.y = (rand() % 8) / 8.0f;
+				p->vel.x = 8.0 * n * sin(PI * t / 180.0) + 5 + (rand() % 1000) / 400.0;
+				p->vel.y = 0;
+				p->vel.z = 8.0 * n * cos(PI * t / 180.0) + 5 + (rand() % 1000) / 400.0;
+				p->size = (rand() % 100) / 200.0f + 0.1f;
+				p->timeLeft = lastTime;
+				p->g = g;
+				p->drag = drag;
+				node->partical = p;
+				node->next = nullptr;
+				particalsEnd->next = node;
+				particalsEnd = node;
+			}
 		}
 	}
 
@@ -41,10 +101,36 @@ namespace graphic {
 		glEnable(GL_TEXTURE_2D);
 		world::DrawWorld();
 
+		// 绘制实体
+		glEnable(GL_BLEND);
+		MotionObjNode *mNode = motionObjs->next;
+		while (mNode != nullptr) {
+			MotionObj *o = mNode->motionObj;
+			glPushMatrix();
+			glTranslated(o->pos.x - wpx, o->pos.y, wpz - o->pos.z);
+			glRotatef(-player::rot.x, 0, 1, 0);
+			glRotatef(-player::rot.y, 1, 0, 0);
+			glBindTexture(GL_TEXTURE_2D, o->tex);
+			glBegin(GL_QUADS);
+			float size = 0.1f * o->size;
+			glTexCoord2f(0, 0);
+			glVertex3f(-size, -size, 0);
+			glTexCoord2f(1, 0);
+			glVertex3f(size, -size, 0);
+			glTexCoord2f(1, 1);
+			glVertex3f(size, size, 0);
+			glTexCoord2f(0, 1);
+			glVertex3f(-size, size, 0);
+			glEnd();
+			glPopMatrix();
+			mNode = mNode->next;
+		}
+		glDisable(GL_BLEND);
+
 		// 绘制粒子效果
-		ParticalNode *node = particals->next;
-		while (node != nullptr) {
-			Partical *p = node->partical;
+		ParticalNode *pNode = particals->next;
+		while (pNode != nullptr) {
+			Partical *p = pNode->partical;
 			glPushMatrix();
 			glTranslated(p->pos.x - wpx, p->pos.y, wpz - p->pos.z);
 			glRotatef(-player::rot.x, 0, 1, 0);
@@ -62,7 +148,7 @@ namespace graphic {
 			glVertex3f(-size, size, 0);
 			glEnd();
 			glPopMatrix();
-			node = node->next;
+			pNode = pNode->next;
 		}
 
 		glDisable(GL_TEXTURE_2D);
@@ -197,6 +283,11 @@ namespace graphic {
 		particals->next = nullptr;
 		particalsEnd = particals;
 
+		motionObjs = new MotionObjNode;
+		motionObjs->motionObj = nullptr;
+		motionObjs->next = nullptr;
+		motionObjsEnd = motionObjs;
+
 		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -204,5 +295,11 @@ namespace graphic {
 		gluPerspective(60.0f, (GLfloat)width / height, 0.1f, 110.0f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+	}
+
+	void MotionObj::OnDeath() {
+		if (type == 0) {
+			FireworkEffect(pos, blockMgr::PINK, 2, 5, 0.3);
+		}
 	}
 }

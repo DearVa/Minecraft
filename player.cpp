@@ -64,7 +64,13 @@ namespace player {
 			}
 		} else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
 			if (hit != nullptr) {
-				PutBlock(hit->pos + hit->face, blockMgr::leave);
+				graphic::MotionObj *obj = new graphic::MotionObj();
+				obj->pos = hit->pos + hit->face;
+				obj->tex = blockMgr::FIREWORK;
+				obj->vel = Vector3(0, 8, 0);
+				obj->timeLeft = 1.2;
+				graphic::Summon(obj);
+				// PutBlock(hit->pos + hit->face, blockMgr::stone);
 			}
 		}
 	}

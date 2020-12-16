@@ -12,3 +12,6 @@ TODO:
 4.水，透明的树叶。
 
 ……
+
+
+![Image text](https://dva-1259474164.cos.ap-shanghai.myqcloud.com/Minecraft/preview.jpg)
